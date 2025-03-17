@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Whiteboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .whiteboard { border: 2px solid #000; width: 80%; height: 400px; margin: 20px auto; position: relative; }
+        .question { font-size: 20px; margin: 20px; }
+        .answer { font-size: 20px; margin: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Math Whiteboard</h1>
+    <div class="whiteboard">
+        <div class="question" id="question">Question will appear here</div>
+        <input type="text" id="answer" class="answer" placeholder="Type your answer here">
+        <button onclick="checkAnswer()">Submit</button>
+    </div>
+    <script>
+        function setQuestion(question) {
+            document.getElementById('question').innerText = question;
+        }
+
+        function checkAnswer() {
+            const answer = document.getElementById('answer').value;
+            alert('Your answer: ' + answer);
+        }
+
+        // Example question
+        setQuestion('What is 5 + 3?');
+    </script>
+</body>
+</html>
