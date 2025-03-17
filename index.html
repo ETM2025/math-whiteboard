@@ -25,10 +25,38 @@
         <button onclick="checkAnswer()">Submit</button>
     </div>
     <div class="record" id="record"></div>
+
+    <!-- Add Firebase SDK -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDtX0qICRNa5bBnGpceSuzBBuoup8LMrwY",
+        authDomain: "mathwhiteboard-1a1bb.firebaseapp.com",
+        projectId: "mathwhiteboard-1a1bb",
+        storageBucket: "mathwhiteboard-1a1bb.firebasestorage.app",
+        messagingSenderId: "659610981771",
+        appId: "1:659610981771:web:f887d3e6896dedad1b8b8e",
+       Id: "G-PLN4VTDDGX"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+    </script>
+
     <script>
         function updateQuestion() {
             const newQuestion = document.getElementById('newQuestion').value;
             document.getElementById('question').innerText = newQuestion;
+            db.collection("questions").doc("current").set({
+                question: newQuestion
+            });
         }
 
         function checkAnswer() {
@@ -38,8 +66,29 @@
             const newRecord = document.createElement('div');
             newRecord.innerText = `Question: ${question}, Answer: ${answer}`;
             recordDiv.appendChild(newRecord);
+            db.collection("answers").add({
+                question: question,
+                answer: answer
+            });
             alert('Your answer has been recorded.');
         }
+
+        // Load the current question
+        db.collection("questions").doc("current").get().then((doc) => {
+            if (doc.exists) {
+                document.getElementById('question').innerText = doc.data().question;
+            }
+        });
+
+        // Load previous answers
+        db.collection("answers").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                const recordDiv = document.getElementById('record');
+                const newRecord = document.createElement('div');
+                newRecord.innerText = `Question: ${doc.data().question}, Answer: ${doc.data().answer}`;
+                recordDiv.appendChild(newRecord);
+            });
+        });
     </script>
 </body>
 </html>
