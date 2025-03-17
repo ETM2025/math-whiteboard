@@ -10,6 +10,7 @@
         .question { font-size: 20px; margin: 20px; }
         .answer { font-size: 20px; margin: 20px; }
         .input-form { margin: 20px; }
+        .record { font-size: 16px; margin: 20px; }
     </style>
 </head>
 <body>
@@ -23,6 +24,7 @@
         <input type="text" id="answer" class="answer" placeholder="Type your answer here">
         <button onclick="checkAnswer()">Submit</button>
     </div>
+    <div class="record" id="record"></div>
     <script>
         function updateQuestion() {
             const newQuestion = document.getElementById('newQuestion').value;
@@ -30,8 +32,13 @@
         }
 
         function checkAnswer() {
+            const question = document.getElementById('question').innerText;
             const answer = document.getElementById('answer').value;
-            alert('Your answer: ' + answer);
+            const recordDiv = document.getElementById('record');
+            const newRecord = document.createElement('div');
+            newRecord.innerText = `Question: ${question}, Answer: ${answer}`;
+            recordDiv.appendChild(newRecord);
+            alert('Your answer has been recorded.');
         }
     </script>
 </body>
