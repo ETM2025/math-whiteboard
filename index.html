@@ -46,46 +46,48 @@
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
+    </script>
 
-      function updateQuestion() {
-        const newQuestion = document.getElementById('newQuestion').value;
-        document.getElementById('question').innerText = newQuestion;
-        setDoc(doc(db, "questions", "current"), {
-          question: newQuestion
-        });
-      }
-
-      function checkAnswer() {
-        const question = document.getElementById('question').innerText;
-        const answer = document.getElementById('answer').value;
-        const recordDiv = document.getElementById('record');
-        const newRecord = document.createElement('div');
-        newRecord.innerText = `Question: ${question}, Answer: ${answer}`;
-        recordDiv.appendChild(newRecord);
-        addDoc(collection(db, "answers"), {
-          question: question,
-          answer: answer
-        });
-        alert('Your answer has been recorded.');
-      }
-
-      // Real-time listener for the current question
-      onSnapshot(doc(db, "questions", "current"), (doc) => {
-        if (doc.exists()) {
-          document.getElementById('question').innerText = doc.data().question;
+    <script>
+        function updateQuestion() {
+            const newQuestion = document.getElementById('newQuestion').value;
+            document.getElementById('question').innerText = newQuestion;
+            setDoc(doc(db, "questions", "current"), {
+                question: newQuestion
+            });
         }
-      });
 
-      // Real-time listener for answers
-      onSnapshot(collection(db, "answers"), (snapshot) => {
-        const recordDiv = document.getElementById('record');
-        recordDiv.innerHTML = ''; // Clear previous records
-        snapshot.forEach((doc) => {
-          const newRecord = document.createElement('div');
-          newRecord.innerText = `Question: ${doc.data().question}, Answer: ${doc.data().answer}`;
-          recordDiv.appendChild(newRecord);
+        function checkAnswer() {
+            const question = document.getElementById('question').innerText;
+            const answer = document.getElementById('answer').value;
+            const recordDiv = document.getElementById('record');
+            const newRecord = document.createElement('div');
+            newRecord.innerText = `Question: ${question}, Answer: ${answer}`;
+            recordDiv.appendChild(newRecord);
+            addDoc(collection(db, "answers"), {
+                question: question,
+                answer: answer
+            });
+            alert('Your answer has been recorded.');
+        }
+
+        // Real-time listener for the current question
+        onSnapshot(doc(db, "questions", "current"), (doc) => {
+            if (doc.exists()) {
+                document.getElementById('question').innerText = doc.data().question;
+            }
         });
-      });
+
+        // Real-time listener for answers
+        onSnapshot(collection(db, "answers"), (snapshot) => {
+            const recordDiv = document.getElementById('record');
+            recordDiv.innerHTML = ''; // Clear previous records
+            snapshot.forEach((doc) => {
+                const newRecord = document.createElement('div');
+                newRecord.innerText = `Question: ${doc.data().question}, Answer: ${doc.data().answer}`;
+                recordDiv.appendChild(newRecord);
+            });
+        });
     </script>
 </body>
 </html>
