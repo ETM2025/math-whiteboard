@@ -30,9 +30,7 @@
     <script type="module">
       // Import the functions you need from the SDKs you need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-      import { getFirestore } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
+      import { getFirestore, doc, onSnapshot, collection, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
       // Your web app's Firebase configuration
       const firebaseConfig = {
@@ -42,53 +40,52 @@
         storageBucket: "mathwhiteboard-1a1bb.firebasestorage.app",
         messagingSenderId: "659610981771",
         appId: "1:659610981771:web:f887d3e6896dedad1b8b8e",
-       Id: "G-PLN4VTDDGX"
+        measurementId: "G-PLN4VTDDGX"
       };
 
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
-    </script>
 
-    <script>
-        function updateQuestion() {
-            const newQuestion = document.getElementById('newQuestion').value;
-            document.getElementById('question').innerText = newQuestion;
-            db.collection("questions").doc("current").set({
-                question: newQuestion
-            });
-        }
-
-        function checkAnswer() {
-            const question = document.getElementById('question').innerText;
-            const answer = document.getElementById('answer').value;
-            const recordDiv = document.getElementById('record');
-            const newRecord = document.createElement('div');
-            newRecord.innerText = `Question: ${question}, Answer: ${answer}`;
-            recordDiv.appendChild(newRecord);
-            db.collection("answers").add({
-                question: question,
-                answer: answer
-            });
-            alert('Your answer has been recorded.');
-        }
-
-        // Load the current question
-        db.collection("questions").doc("current").get().then((doc) => {
-            if (doc.exists) {
-                document.getElementById('question').innerText = doc.data().question;
-            }
+      function updateQuestion() {
+        const newQuestion = document.getElementById('newQuestion').value;
+        document.getElementById('question').innerText = newQuestion;
+        setDoc(doc(db, "questions", "current"), {
+          question: newQuestion
         });
+      }
 
-        // Load previous answers
-        db.collection("answers").get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                const recordDiv = document.getElementById('record');
-                const newRecord = document.createElement('div');
-                newRecord.innerText = `Question: ${doc.data().question}, Answer: ${doc.data().answer}`;
-                recordDiv.appendChild(newRecord);
-            });
+      function checkAnswer() {
+        const question = document.getElementById('question').innerText;
+        const answer = document.getElementById('answer').value;
+        const recordDiv = document.getElementById('record');
+        const newRecord = document.createElement('div');
+        newRecord.innerText = `Question: ${question}, Answer: ${answer}`;
+        recordDiv.appendChild(newRecord);
+        addDoc(collection(db, "answers"), {
+          question: question,
+          answer: answer
         });
+        alert('Your answer has been recorded.');
+      }
+
+      // Real-time listener for the current question
+      onSnapshot(doc(db, "questions", "current"), (doc) => {
+        if (doc.exists()) {
+          document.getElementById('question').innerText = doc.data().question;
+        }
+      });
+
+      // Real-time listener for answers
+      onSnapshot(collection(db, "answers"), (snapshot) => {
+        const recordDiv = document.getElementById('record');
+        recordDiv.innerHTML = ''; // Clear previous records
+        snapshot.forEach((doc) => {
+          const newRecord = document.createElement('div');
+          newRecord.innerText = `Question: ${doc.data().question}, Answer: ${doc.data().answer}`;
+          recordDiv.appendChild(newRecord);
+        });
+      });
     </script>
 </body>
 </html>
