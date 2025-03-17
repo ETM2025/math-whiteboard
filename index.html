@@ -9,27 +9,30 @@
         .whiteboard { border: 2px solid #000; width: 80%; height: 400px; margin: 20px auto; position: relative; }
         .question { font-size: 20px; margin: 20px; }
         .answer { font-size: 20px; margin: 20px; }
+        .input-form { margin: 20px; }
     </style>
 </head>
 <body>
     <h1>Math Whiteboard</h1>
+    <div class="input-form">
+        <input type="text" id="newQuestion" placeholder="Enter a new math question">
+        <button onclick="updateQuestion()">Set Question</button>
+    </div>
     <div class="whiteboard">
         <div class="question" id="question">Question will appear here</div>
         <input type="text" id="answer" class="answer" placeholder="Type your answer here">
         <button onclick="checkAnswer()">Submit</button>
     </div>
     <script>
-        function setQuestion(question) {
-            document.getElementById('question').innerText = question;
+        function updateQuestion() {
+            const newQuestion = document.getElementById('newQuestion').value;
+            document.getElementById('question').innerText = newQuestion;
         }
 
         function checkAnswer() {
             const answer = document.getElementById('answer').value;
             alert('Your answer: ' + answer);
         }
-
-        // Example question
-        setQuestion('What is 5 + 3?');
     </script>
 </body>
 </html>
